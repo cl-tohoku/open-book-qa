@@ -1,3 +1,54 @@
+## Generate a corpus
+
+### Get Wikipedia page ids from a Cirrussearch dump file
+
+```sh
+$ python get_all_page_ids_from_cirrussearch.py \
+--cirrus_file ~/data/wikipedia/cirrus/20200831/jawiki-20200831-cirrussearch-content.json.gz \
+--output_file ~/work/wikipedia-utils/jawiki-2020831-cirrusearch-pageids.json
+```
+
+### Get Wikipedia page htmls
+
+```sh
+# Note: the script was run on a GCP instance
+$ python get_page_htmls.py \
+--page_ids_file ~/work/wikipedia-utils/jawiki-2020831-cirrusearch-pageids.json \
+--output_file ~/work/wikipedia-utils/jawiki-2020831-cirrusearch-page-htmls.json \
+--language ja \
+--batch_size 5 \
+--mobile
+```
+
+### Extract paragraphs from the Wikipedia page htmls
+
+- 7833811 paragraphs
+
+```sh
+$ python extract_paragrahs_from_page_htmls.py \
+--input_file ~/work/wikipedia-utils/jawiki-2020831-cirrusearch-page-htmls.json.gz \
+--output_file ~/work/wikipedia-utils/jawiki-2020831-cirrusearch-paragraphs.json.gz
+```
+
+## Build an Elasticsearch index of Wikipedia paragraphs
+
+### Requirements
+
+- Elasticsearch 6.5.4
+    - with several plugins installed
+    ```sh
+    $ ./bin/elasticsearch-plugin install analysis-icu
+    $ ./bin/elasticsearch-plugin install analysis-kuromoji
+    $ ./bin/elasticsearch-plugin install org.wikimedia.search:extra:6.5.4
+    ```
+
+```sh
+# In ABCI
+$ python build_es_index_paragraphs.py \
+--input_file ~/work/wikipedia-utils/jawiki-2020831-cirrusearch-paragraphs.json.gz \
+--index_name jawiki_20200831_paragraphs
+```
+
 ## Make datasets
 
 ```sh
