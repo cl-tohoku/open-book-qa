@@ -6,3 +6,4 @@ ipadic
 jupyterlab
 logzero
 matplotlib
+unidic_lite
