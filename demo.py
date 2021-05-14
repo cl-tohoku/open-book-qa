@@ -25,7 +25,7 @@ class ESRetriever(Retriever):
 
     def retrieve_top_k(self, question: str, k: int):
         query = {"match": {"text": question}}
-        result = self.es.search(index=args.es_index_name, body=dict(query=query), size=k)
+        result = self.es.search(index=self.index_name, body=dict(query=query), size=k)
         return [{"title": hit["_source"]["title"], "text": hit["_source"]["text"]} for hit in result["hits"]["hits"]]
 
 
